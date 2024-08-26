@@ -39,13 +39,13 @@ package Wheelie;
  */
 public class PID {
 	/** The P value of the equation */
-	private double kP;
+	public double kP;
 
 	/** The value used to determine the growth of I in the equation */
-	private double kI;
+	public double kI;
 
 	/** The D value of the equation */
-	private double kD;
+	public double kD;
 
 	/**
 	 * The constructor for the PID class

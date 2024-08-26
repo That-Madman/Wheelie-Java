@@ -56,9 +56,14 @@ public final class PursuitMath {
 		return (0 > disc) ? Double.NaN : (-b + Math.sqrt(disc)) / (2 * a);
 	}
 
-	/** Calculates a single part of a waypoint, such as X, Y or the Heading */
-	public static double lerp (double c1, double c2, double q) {
-		return c1 + q * (c2 - c1);
+	/** 
+ 	* Calculates the linear interpolation to determine parts of the waypoints
+  	* @param c1 The first point
+   	* @param c2 The second point
+    	* @param t The parameter
+ 	*/
+	public static double lerp (double c1, double c2, double t) {
+		return c1 + t * (c2 - c1);
 	}
 
 	/**

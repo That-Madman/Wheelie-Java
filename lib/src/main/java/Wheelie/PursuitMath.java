@@ -57,12 +57,12 @@ public final class PursuitMath {
 	}
 
 	/** Calculates a single part of a waypoint, such as X, Y or the Heading */
-	public static double waypointCompCalc (double c1, double c2, double q) {
+	public static double lerp (double c1, double c2, double q) {
 		return c1 + q * (c2 - c1);
 	}
 
 	/**
-	 * Calculates a full waupoint for the path.
+	 * Calculates a full waypoint for the path.
 	 * @param obj The location of the robot, AKA the center of the circle
 	 * @param look The lookahead distance, AKA the radius of the circle
 	 * @param p1 The first of two preceding points
@@ -79,9 +79,9 @@ public final class PursuitMath {
 		
 		if (t == t) //check if non-NaN
 			return new Pose2D (
-				waypointCompCalc (p1.getX(), p2.getX(), t),
-				waypointCompCalc (p1.getY(), p2.getY(), t),
-				waypointCompCalc (p1.getH(), p2.getH(), t)
+				lerp (p1.getX(), p2.getX(), t),
+				lerp (p1.getY(), p2.getY(), t),
+     lerp (p1.getH(), p2.getH(), t)
 				);
 		else
 			return new Pose2D (

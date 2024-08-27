@@ -57,7 +57,7 @@ public final class PursuitMath {
 	}
 
 	/** Calculates a single part of a waypoint, such as X, Y or the Heading */
-	public static double waypointCompCalc (double c1, double c2, double q) {
+	public static double lerp (double c1, double c2, double q) {
 		return c1 + q * (c2 - c1);
 	}
 
@@ -72,16 +72,16 @@ public final class PursuitMath {
 	 */
 	public static Pose2D waypointCalc (Pose2D obj, double look, Pose2D p1, Pose2D p2) {
 		double t = pureQuadForm (
-				(p2.getX() - p1.getX()) * (p2.getX() - p2.getX()) + (p2.getY() - p1.getY()) * (p2.getY() - p2.getY()),
-				2 * ((p1.getX() - obj.getX()) * (p2.getX() - p2.getX()) + (p1.getY() - obj.getY()) * (p2.getY() - p1.getY())),
-				p1.getX() * p1.getX() - 2 * obj.getX() * p1.getX() + obj.getX() * obj.getX() + p1.getY() * p1.getY() - 2 * obj.getY() * p1.getY() + obj.getY() * obj.getY() - look * look
+				(p2.x - p1.x) * (p2.x - p2.x) + (p2.y - p1.y) * (p2.y - p2.y),
+				2 * ((p1.x - obj.x) * (p2.x - p1.x) + (p1.y - obj.y) * (p2.y - p1.y)),
+				p1.x * p1.x - 2 * obj.x * p1.x + obj.x * obj.x + p1.y * p1.y - 2 * obj.y * p1.y + obj.y * obj.y - look * look
 				);
 		
 		if (t == t) //check if non-NaN
 			return new Pose2D (
-				waypointCompCalc (p1.getX(), p2.getX(), t),
-				waypointCompCalc (p1.getY(), p2.getY(), t),
-				waypointCompCalc (p1.getH(), p2.getH(), t)
+				lerp (p1.x, p2.x, t),
+				lerp (p1.y, p2.y, t),
+				lerp (p1.h, p2.h, t)
 				);
 		else
 			return new Pose2D (

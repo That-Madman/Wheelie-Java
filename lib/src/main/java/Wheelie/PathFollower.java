@@ -30,45 +30,5 @@
 
 package Wheelie;
 
-/**
- * A point in 2D space, alongside the heading of the point.
- *
- * @author Alex Bryan
- */
-public class Pose2D {
-	/** The x-coordinate */
-	public double x;
-
-	/** The y-coordinate */
-	public double y;
-
-	/** The heading */
-	public double h;
-
-	/**
-	 * The constructor for Pose2D, sans heading initialization, which defaults to 0.
-	 * @param x The x component of the starting point
-	 * @param y The y component of the starting point
-	 * 
-	 * @author Alex Bryan
-	 */
-	public Pose2D (double x, double y) {
-		this.x = x;
-		this.y = y;
-		h = 0;
-	}
-
-	/**
-	 * The constructor for Pose2D.
-	 * @param x The x component of the starting point
-	 * @param y The y component of the starting point
-	 * @param h The initial heading
-	 *
-	 * @author Alex Bryan
-	 */
-	public Pose2D (double x, double y, double h) {
-		this.x = x;
-		this.y = y;
-		this.h = h;
-	}
+public class PathFollower { //TODO finish
 }

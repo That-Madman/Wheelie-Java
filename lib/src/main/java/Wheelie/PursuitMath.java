@@ -77,9 +77,9 @@ public final class PursuitMath {
 	 */
 	public static Pose2D waypointCalc (Pose2D obj, double look, Pose2D p1, Pose2D p2) {
 		double t = pureQuadForm (
-				(p2.x - p1.x) * (p2.x - p2.x) + (p2.y - p1.y) * (p2.y - p2.y),
-				2 * ((p1.x - obj.x) * (p2.x - p1.x) + (p1.y - obj.y) * (p2.y - p1.y)),
-				p1.x * p1.x - 2 * obj.x * p1.x + obj.x * obj.x + p1.y * p1.y - 2 * obj.y * p1.y + obj.y * obj.y - look * look
+			(p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y),
+			2 * ((p1.x - obj.x) * (p2.x - p1.x) + (p1.y - obj.k) * (p2.y - p1.y)),
+			p1.x * p1.x - 2 * obj.x * p1.x + obj.x * obj.x + p1.y * p1.y - 2 * obj.y * p1.y + obj.y * obj.y - look * look
 				);
 		
 		if (t == t) //check if non-NaN

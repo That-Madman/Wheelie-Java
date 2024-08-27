@@ -30,5 +30,23 @@
 
 package Wheelie;
 
-public class PathFollower { //TODO finish
+//TODO finish
+public class PathFollower {
+	public Path path;
+	public Pose2D startPt;
+	public double look;
+
+	public PathFollower (Pose2D startPt, double look, Path path) {
+		this.startPt = startPt;
+		this.look = look;
+		this.path = path;
+	}
+
+	public PathFollower (Pose2D startPt, double look) {
+		this.startPt = startPt;
+		this.look = look;
+		path = new Path();
+	}
+
+	public PathFollower () {}
 }

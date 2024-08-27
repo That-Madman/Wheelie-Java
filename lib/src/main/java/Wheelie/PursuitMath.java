@@ -56,13 +56,24 @@ public final class PursuitMath {
 		return (0 > disc) ? Double.NaN : (-b + Math.sqrt(disc)) / (2 * a);
 	}
 
+<<<<<<< HEAD
 	/** Calculates a single part of a waypoint, such as X, Y or the Heading */
 	public static double lerp (double c1, double c2, double q) {
 		return c1 + q * (c2 - c1);
+=======
+	/** 
+ 	* Calculates the linear interpolation to determine parts of the waypoints
+  	* @param c1 The first point
+   	* @param c2 The second point
+    	* @param t The parameter
+ 	*/
+	public static double lerp (double c1, double c2, double t) {
+		return c1 + t * (c2 - c1);
+>>>>>>> fc9de3e543deab39a0566f158647cd4de136796a
 	}
 
 	/**
-	 * Calculates a full waupoint for the path.
+	 * Calculates a full waypoint for the path.
 	 * @param obj The location of the robot, AKA the center of the circle
 	 * @param look The lookahead distance, AKA the radius of the circle
 	 * @param p1 The first of two preceding points
@@ -79,9 +90,15 @@ public final class PursuitMath {
 		
 		if (t == t) //check if non-NaN
 			return new Pose2D (
+<<<<<<< HEAD
 				lerp (p1.x, p2.x, t),
 				lerp (p1.y, p2.y, t),
 				lerp (p1.h, p2.h, t)
+=======
+				lerp (p1.getX(), p2.getX(), t),
+				lerp (p1.getY(), p2.getY(), t),
+     lerp (p1.getH(), p2.getH(), t)
+>>>>>>> fc9de3e543deab39a0566f158647cd4de136796a
 				);
 		else
 			return new Pose2D (

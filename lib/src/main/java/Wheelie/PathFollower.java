@@ -36,6 +36,8 @@ public class PathFollower {
 	public Pose2D startPt;
 	public double look;
 
+	private int wayPoint = 0;
+
 	public PathFollower (Pose2D startPt, double look, Path path) {
 		this.startPt = startPt;
 		this.look = look;
@@ -48,5 +50,44 @@ public class PathFollower {
 		path = new Path();
 	}
 
-	public PathFollower () {}
+	public PathFollower () {
+
+	}
+
+	/**
+	 * Returns the movement required the robot is from its next waypoint within its lookahead
+	 * @param obj The location of the robot, AKA the center of the circle
+	 *
+	 * @author ...
+	 */
+	public Pose2D followPath(Pose2D obj){
+		//Finds the distance between current position and the next waypoint
+		double distance = Math.hypot(path.getPt(wayPoint).x - obj.x,
+									path.getPt(wayPoint).y - obj.y);
+		double lookAhead = look;
+
+		//Ensures that the circle is still in contact with path
+		if (distance < lookAhead){
+			if (path.pathLength() != wayPoint+1)
+				wayPoint++; //Increments to next waypoint if circle and path don't intersect
+			else
+				lookAhead = distance; //Shrinks the circle as it approaches the last waypoint
+		}
+
+		//Finds the target in its lookahead distance
+		Pose2D target = PursuitMath.waypointCalc
+				(obj, lookAhead, path.getPt(wayPoint), path.getPt(wayPoint+1));
+
+		Pose2D diff = new Pose2D(target.x - obj.x,
+				target.y - obj.y,
+				target.h - obj.h);
+
+		//Finds the forward, strafe, and turn values
+		double angle = Math.atan2(diff.y, diff.x);
+		double forward = Math.cos(angle) * diff.x + Math.sin(angle) * diff.y,
+		 		strafe = -Math.sin(angle) * diff.x + Math.cos(angle) * diff.y,
+				turn = PursuitMath.Clamp(diff.h);
+
+		return new Pose2D(forward, strafe, turn);
+	}
 }

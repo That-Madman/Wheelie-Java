@@ -56,6 +56,26 @@ public final class PursuitMath {
 		return (0 > disc) ? Double.NaN : (-b + Math.sqrt(disc)) / (2 * a);
 	}
 
+	/**
+	 * Ensures the inputted number is within its boundaries
+	 * @param value a numeric value
+	 * @param min The minimum the value can be
+	 * @param max The maximum the value can be
+	 */
+	public static double Clamp (double value, double min, double max) {
+		if (value > max)
+			return max;
+		return Math.max(value, min);
+	}
+
+	/**
+	 * Ensures the inputted number is within the closed interval of -1 and 1
+	 * @param value a numeric value
+	 */
+	public static double Clamp (double value) {
+		return Clamp(value, -1, 1);
+	}
+
 	/** 
  	* Calculates the linear interpolation to determine parts of the waypoints
   	* @param c1 The first point

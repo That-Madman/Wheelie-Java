@@ -56,6 +56,26 @@ public final class PursuitMath {
 		return (0 > disc) ? Double.NaN : (-b + Math.sqrt(disc)) / (2 * a);
 	}
 
+	/**
+	 * Ensures the inputted number is within its boundaries
+	 * @param value a numeric value
+	 * @param min The minimum the value can be
+	 * @param max The maximum the value can be
+	 */
+	public static double Clamp (double value, double min, double max) {
+		if (value > max)
+			return max;
+		return Math.max(value, min);
+	}
+
+	/**
+	 * Ensures the inputted number is within the closed interval of -1 and 1
+	 * @param value a numeric value
+	 */
+	public static double Clamp (double value) {
+		return Clamp(value, -1, 1);
+	}
+
 	/** 
  	* Calculates the linear interpolation to determine parts of the waypoints
   	* @param c1 The first point
@@ -78,7 +98,7 @@ public final class PursuitMath {
 	public static Pose2D waypointCalc (Pose2D obj, double look, Pose2D p1, Pose2D p2) {
 		double t = pureQuadForm (
 					(p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y),
-					2 * ((p1.x - obj.x) * (p2.x - p1.x) + (p1.y - obj.k) * (p2.y - p1.y)),
+					2 * ((p1.x - obj.x) * (p2.x - p1.x) + (p1.y - obj.y) * (p2.y - p1.y)),
 					p1.x * p1.x - 2 * obj.x * p1.x + obj.x * obj.x + p1.y * p1.y - 2 * obj.y * p1.y + obj.y * obj.y - look * look
 				);
 		

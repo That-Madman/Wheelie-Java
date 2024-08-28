@@ -95,4 +95,9 @@ public class Path {
 	public Pose2D getPt (int i) {
 		return points.get(i);
 	}
+
+	/** Returns the number of waypoints in the path */
+	public int pathLength () {
+		return points.size();
+	}
 }

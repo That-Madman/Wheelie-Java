@@ -162,7 +162,7 @@ public class PID {
 
                 i += kI * (currErr * ((System.currentTimeMillis() / 1000) - prevTime));
 
-                if (!(maxI == maxI)) {
+                if (maxI == maxI) {
                         i = (i > maxI) ? maxI : i;
                         i = (i < -maxI) ? -maxI : i;
                 }

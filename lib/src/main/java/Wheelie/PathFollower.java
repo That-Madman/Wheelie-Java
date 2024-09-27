@@ -30,13 +30,15 @@
 
 package Wheelie;
 
-//TODO finish
 public class PathFollower {
 	public Path path;
 	public Pose2D startPt;
 	public double look;
 
 	private int wayPoint = 0;
+	private boolean shrinking_look;
+
+	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path */
 
 	public PathFollower (Pose2D startPt, double look, Path path) {
 		this.startPt = startPt;
@@ -50,28 +52,27 @@ public class PathFollower {
 		path = new Path();
 	}
 
-	public PathFollower () {
-
-	}
 
 	/**
 	 * Returns the movement required the robot is from its next waypoint within its lookahead
 	 * @param obj The location of the robot, AKA the center of the circle
 	 *
-	 * @author ...
+	 * @author Kennedy Brundidge
 	 */
 	public Pose2D followPath(Pose2D obj){
 		//Finds the distance between current position and the next waypoint
 		double distance = Math.hypot(path.getPt(wayPoint).x - obj.x,
-									path.getPt(wayPoint).y - obj.y);
+				path.getPt(wayPoint).y - obj.y);
 		double lookAhead = look;
 
 		//Ensures that the circle is still in contact with path
 		if (distance < lookAhead){
 			if (path.pathLength() != wayPoint+1)
 				wayPoint++; //Increments to next waypoint if circle and path don't intersect
-			else
+			else {
 				lookAhead = distance; //Shrinks the circle as it approaches the last waypoint
+				shrinking_look = true;
+			}
 		}
 
 		//Finds the target in its lookahead distance
@@ -85,9 +86,19 @@ public class PathFollower {
 		//Finds the forward, strafe, and turn values
 		double angle = Math.atan2(diff.y, diff.x);
 		double forward = Math.cos(angle) * diff.x + Math.sin(angle) * diff.y,
-		 		strafe = -Math.sin(angle) * diff.x + Math.cos(angle) * diff.y,
+				strafe = -Math.sin(angle) * diff.x + Math.cos(angle) * diff.y,
 				turn = PursuitMath.Clamp(diff.h);
 
 		return new Pose2D(forward, strafe, turn);
+	}
+
+	/** Returns the index of the current Pose2D in the Path */
+	public int getWayPoint(){
+		return wayPoint;
+	}
+
+	/** Returns if the lookahead distance is shrinking */
+	public boolean isShrinkingLook(){
+		return shrinking_look;
 	}
 }

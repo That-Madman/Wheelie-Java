@@ -30,22 +30,41 @@
 
 package Wheelie;
 
+/**
+ * The Path Following algorithm that takes a list of points and lookahead to determine how
+ * the robot should move towards its destination
+ *
+ * @author Kennedy Brundidge
+ */
 public class PathFollower {
 	public Path path;
 	public Pose2D startPt;
 	public double look;
 
 	private int wayPoint = 0;
-	private boolean shrinking_look;
 
-	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path */
+	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path
+	 * @param startPt The starting location of the robot
+	 * @param look The lookahead distance
+	 * @param path The Path object of the points the robot will follow
+	 *
+	 * @author Kennedy Brundidge
+	 */
 
 	public PathFollower (Pose2D startPt, double look, Path path) {
 		this.startPt = startPt;
 		this.look = look;
 		this.path = path;
+
 	}
 
+	/** The constructor for the path follower, with the starting Pose2D
+	 * and lookahead distance (path will be initialized with no points)
+	 * @param startPt The starting location of the robot
+	 * @param look The lookahead distance
+	 *
+	 * @author Kennedy Brundidge
+	 */
 	public PathFollower (Pose2D startPt, double look) {
 		this.startPt = startPt;
 		this.look = look;
@@ -55,39 +74,46 @@ public class PathFollower {
 
 	/**
 	 * Returns the movement required the robot is from its next waypoint within its lookahead
-	 * @param obj The location of the robot, AKA the center of the circle
+	 * @param obj The Pose2D of the robot, AKA the center of the circle
 	 *
 	 * @author Kennedy Brundidge
 	 */
 	public Pose2D followPath(Pose2D obj){
-		//Finds the distance between current position and the next waypoint
-		double distance = Math.hypot(path.getPt(wayPoint).x - obj.x,
-				path.getPt(wayPoint).y - obj.y);
-		double lookAhead = look;
+		Pose2D next = new Pose2D(Double.NaN,Double.NaN);
 
-		//Ensures that the circle is still in contact with path
-		if (distance < lookAhead){
-			if (path.pathLength() != wayPoint+1)
-				wayPoint++; //Increments to next waypoint if circle and path don't intersect
-			else {
-				lookAhead = distance; //Shrinks the circle as it approaches the last waypoint
-				shrinking_look = true;
-			}
+		//Checks that robot is not approaching the last point
+		if (path.pathLength() != wayPoint+2) {
+			//Finds if the circle intersects with the next line/path
+			next = PursuitMath.waypointCalc
+					(obj, look, path.getPt(wayPoint + 1), path.getPt(wayPoint + 2));
 		}
 
-		//Finds the target in its lookahead distance
-		Pose2D target = PursuitMath.waypointCalc
-				(obj, lookAhead, path.getPt(wayPoint), path.getPt(wayPoint+1));
+		//If circle intersects with next line, then robot can start approaching the next point
+		if(!Double.isNaN(next.x)){
+			wayPoint++;
+		}
 
+		//Finds a point for robot to approach
+		Pose2D target = PursuitMath.waypointCalc
+				(obj, look, path.getPt(wayPoint), path.getPt(wayPoint+1));
+
+		//Moves straight to next point if PP math is returning NaN values
+		if(Double.isNaN(target.x) && Double.isNaN(next.x)){ //Magic the gathering
+			Pose2D t = path.getPt(wayPoint+1);
+			return new Pose2D(
+					t.x - obj.x,
+					t.y - obj.y,
+					t.h - obj.h
+			);
+		}
+
+		//Finds the forward, strafe, and turn values
 		Pose2D diff = new Pose2D(target.x - obj.x,
 				target.y - obj.y,
 				target.h - obj.h);
-
-		//Finds the forward, strafe, and turn values
-		double angle = Math.atan2(diff.y, diff.x);
-		double forward = Math.cos(angle) * diff.x + Math.sin(angle) * diff.y,
-				strafe = -Math.sin(angle) * diff.x + Math.cos(angle) * diff.y,
-				turn = PursuitMath.Clamp(diff.h);
+		double forward =  diff.x,
+				strafe =  diff.y,
+				turn = diff.h;
 
 		return new Pose2D(forward, strafe, turn);
 	}
@@ -97,8 +123,8 @@ public class PathFollower {
 		return wayPoint;
 	}
 
-	/** Returns if the lookahead distance is shrinking */
-	public boolean isShrinkingLook(){
-		return shrinking_look;
+	/** Returns the last point of the path */
+	public Pose2D getLastPoint(){
+		return path.getPt(path.pathLength()-1);
 	}
 }

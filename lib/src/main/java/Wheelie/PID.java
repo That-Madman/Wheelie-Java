@@ -160,7 +160,7 @@ public class PID {
                 double currErr = target - currPos;
                 double p = kP * currErr;
 
-                i += kI * (currErr * Systemm.nanoTime() / 1e9) - prevTime));
+                i += kI * ((currErr * System.nanoTime() / 1e9) - prevTime));
 
                 if (maxI == maxI) {
                         i = (i > maxI) ? maxI : i;

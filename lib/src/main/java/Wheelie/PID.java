@@ -134,7 +134,7 @@ public class PID {
 		double currErr = target - currPos;
 		double p = kP * currErr;
 
-		i += kI * (currErr * (currTime - prevTime));
+		i += kI * currErr * (currTime - prevTime);
 
 		if (!(maxI == maxI)) {
 			i = (i > maxI) ? maxI : i;

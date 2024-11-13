@@ -117,7 +117,7 @@ public class PID {
 
 	/** Sets the start time, utilizing the System clock. */
 	public void setStartTime () {
-		prevTime = (System.currentTimeMillis() / 1000);
+		prevTime = (System.nanoTime() / 1e9);
 	}
 
 
@@ -134,7 +134,7 @@ public class PID {
 		double currErr = target - currPos;
 		double p = kP * currErr;
 
-		i += kI * (currErr * (currTime - prevTime));
+		i += kI * currErr * (currTime - prevTime);
 
 		if (!(maxI == maxI)) {
 			i = (i > maxI) ? maxI : i;
@@ -160,17 +160,17 @@ public class PID {
                 double currErr = target - currPos;
                 double p = kP * currErr;
 
-                i += kI * (currErr * ((System.currentTimeMillis() / 1000) - prevTime));
+                i += kI * ((currErr * System.nanoTime() / 1e9) - prevTime);
 
-                if (!(maxI == maxI)) {
+                if (maxI == maxI) {
                         i = (i > maxI) ? maxI : i;
                         i = (i < -maxI) ? -maxI : i;
                 }
 
-                double d = kD * (currErr - prevErr) / ((System.currentTimeMillis() / 1000) - prevTime);
+                double d = kD * (currErr - prevErr) / ((System.nanoTime() / 1e9) - prevTime);
 
                 prevErr = currErr;
-                prevTime = (System.currentTimeMillis() / 1000);
+                prevTime = (System.nanoTime() / 1e9);
 
                 return p + i + d;
         }

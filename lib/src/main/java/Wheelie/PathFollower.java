@@ -73,7 +73,7 @@ public class PathFollower {
 
 
 	/**
-	 * Returns the movement required the robot is from its next waypoint within its lookahead
+	 * Returns the target pose of the circle and line intersection
 	 * @param obj The Pose2D of the robot, AKA the center of the circle
 	 *
 	 * @author Kennedy Brundidge
@@ -86,11 +86,11 @@ public class PathFollower {
 			//Finds if the circle intersects with the next line/path
 			next = PursuitMath.waypointCalc
 					(obj, look, path.getPt(wayPoint + 1), path.getPt(wayPoint + 2));
-		}
-
-		//If circle intersects with next line, then robot can start approaching the next point
-		if(!Double.isNaN(next.x)){
-			wayPoint++;
+			//If circle intersects with next line then robot can start approaching the next point
+			if(!Double.isNaN(next.x)){
+				wayPoint++;
+				return next;
+			}
 		}
 
 		//Finds a point for robot to approach
@@ -98,24 +98,11 @@ public class PathFollower {
 				(obj, look, path.getPt(wayPoint), path.getPt(wayPoint+1));
 
 		//Moves straight to next point if PP math is returning NaN values
-		if(Double.isNaN(target.x) && Double.isNaN(next.x)){ //Magic the gathering
-			Pose2D t = path.getPt(wayPoint+1);
-			return new Pose2D(
-					t.x - obj.x,
-					t.y - obj.y,
-					t.h - obj.h
-			);
+		if(Double.isNaN(target.x)){ //Magic the gathering
+			target = path.getPt(wayPoint+1);
 		}
 
-		//Finds the forward, strafe, and turn values
-		Pose2D diff = new Pose2D(target.x - obj.x,
-				target.y - obj.y,
-				target.h - obj.h);
-		double forward =  diff.x,
-				strafe =  diff.y,
-				turn = diff.h;
-
-		return new Pose2D(forward, strafe, turn);
+		return target;
 	}
 
 	/** Returns the index of the current Pose2D in the Path */

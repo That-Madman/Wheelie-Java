@@ -86,7 +86,7 @@ public class PathFollower {
 			//Finds if the circle intersects with the next line/path
 			next = PursuitMath.waypointCalc
 					(obj, look, path.getPt(wayPoint + 1), path.getPt(wayPoint + 2));
-			//If circle intersects with next line, then robot can start approaching the next point
+			//If circle intersects with next line then robot can start approaching the next point
 			if(!Double.isNaN(next.x)){
 				wayPoint++;
 				return next;

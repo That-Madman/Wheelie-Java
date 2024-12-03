@@ -1,4 +1,6 @@
-/*
+package Wheelie;
+
+/**
  * BSD 3-Clause License
  *
  * Copyright (c) 2024, Franklin Academy Robotics
@@ -26,11 +28,9 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 
-package Wheelie;
 
-/**
+
  * The Path Following algorithm that takes a list of points and lookahead to determine how
  * the robot should move towards its destination
  *
@@ -42,6 +42,7 @@ public class PathFollower {
 	public double look;
 
 	private int wayPoint = 0;
+	private double translationError = 5, headingError = Math.toRadians(10);
 
 	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path
 	 * @param startPt The starting location of the robot
@@ -55,7 +56,22 @@ public class PathFollower {
 		this.startPt = startPt;
 		this.look = look;
 		this.path = path;
+	}
 
+	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path
+	 * @param startPt The starting location of the robot
+	 * @param look The lookahead distance
+	 * @param path The Path object of the points the robot will follow
+	 *
+	 * @author Kennedy Brundidge
+	 */
+
+	public PathFollower (Pose2D startPt, double look, Path path, double tError, double hError) {
+		this.startPt = startPt;
+		this.look = look;
+		this.path = path;
+		this.translationError = tError;
+		this.headingError = hError;
 	}
 
 	/** The constructor for the path follower, with the starting Pose2D
@@ -79,15 +95,13 @@ public class PathFollower {
 	 * @author Kennedy Brundidge
 	 */
 	public Pose2D followPath(Pose2D obj){
-		Pose2D next = new Pose2D(Double.NaN,Double.NaN);
-
 		//Checks that robot is not approaching the last point
-		if (path.pathLength() != wayPoint+2) {
+		if (path.pathLength() != wayPoint + 2) {
 			//Finds if the circle intersects with the next line/path
-			next = PursuitMath.waypointCalc
+			Pose2D next = PursuitMath.waypointCalc
 					(obj, look, path.getPt(wayPoint + 1), path.getPt(wayPoint + 2));
 			//If circle intersects with next line then robot can start approaching the next point
-			if(!Double.isNaN(next.x)){
+			if (!Double.isNaN(next.x)) {
 				wayPoint++;
 				return next;
 			}
@@ -95,12 +109,17 @@ public class PathFollower {
 
 		//Finds a point for robot to approach
 		Pose2D target = PursuitMath.waypointCalc
-				(obj, look, path.getPt(wayPoint), path.getPt(wayPoint+1));
+				(obj, look, path.getPt(wayPoint), path.getPt(wayPoint + 1));
 
-		//Moves straight to next point if PP math is returning NaN values
-		if(Double.isNaN(target.x)){ //Magic the gathering
-			target = path.getPt(wayPoint+1);
+		//Moves straight to next point if PP math is returning NaN values (circle and line do not intersect)
+		if (Double.isNaN(target.x)) { //Magic the gathering
+			target = path.getPt(wayPoint + 1);
 		}
+
+		//If robot is within its margin of error, move to next point
+		if(Math.abs(path.getPt(wayPoint+1).h-obj.h) <= headingError &&
+				Math.hypot(target.x-obj.x, target.y-obj.y) <= translationError)
+			wayPoint+=1;
 
 		return target;
 	}
@@ -108,6 +127,18 @@ public class PathFollower {
 	/** Returns the index of the current Pose2D in the Path */
 	public int getWayPoint(){
 		return wayPoint;
+	}
+
+	public void setWayPoint(int i){
+		wayPoint = i;
+	}
+
+	public void augmentWaypoint(){
+		wayPoint++;
+	}
+
+	public boolean approachingLast(){
+		return getLastPoint().equals(path.getPt(wayPoint+1));
 	}
 
 	/** Returns the last point of the path */

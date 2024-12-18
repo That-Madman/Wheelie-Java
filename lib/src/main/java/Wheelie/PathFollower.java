@@ -118,15 +118,15 @@ public class PathFollower {
 	}
 
 	/** Returns the index of the current Pose2D in the Path */
-	public int getWayPoint(){
+	public int getWayPoint() {
 		return wayPoint;
 	}
 
-	public void setWayPoint(int i){
+	public void setWayPoint (int i) {
 		wayPoint = i;
 	}
 
-	public void augmentWaypoint(){
+	public void augmentWaypoint() {
 		++wayPoint;
 	}
 
@@ -135,7 +135,7 @@ public class PathFollower {
 	}
 
 	/** Returns the last point of the path */
-	public Pose2D getLastPoint(){
-		return path.getPt(path.pathLength()-1);
+	public Pose2D getLastPoint() {
+		return path.getPt(path.pathLength() - 1);
 	}
 }

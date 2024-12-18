@@ -62,7 +62,7 @@ public final class PursuitMath {
 	 * @param min The minimum the value can be
 	 * @param max The maximum the value can be
 	 */
-	public static double Clamp (double value, double min, double max) {
+	public static double clamp (double value, double min, double max) {
 		if (value > max)
 			return max;
 		return Math.max(value, min);
@@ -72,15 +72,15 @@ public final class PursuitMath {
 	 * Ensures the inputted number is within the closed interval of -1 and 1
 	 * @param value a numeric value
 	 */
-	public static double Clamp (double value) {
-		return Clamp(value, -1, 1);
+	public static double clamp (double value) {
+		return clamp(value, -1, 1);
 	}
 
 	/** 
- 	* Calculates the linear interpolation to determine parts of the waypoints
-  	* @param c1 The first point
-   	* @param c2 The second point
-    	* @param t The parameter
+ 	* Calculates the linear interpolation to determine parts of the waypoint
+	 * @param c1 The first point
+	 * @param c2 The second point
+	 * @param t The parameter
  	*/
 	public static double lerp (double c1, double c2, double t) {
 		return c1 + t * (c2 - c1);
@@ -96,6 +96,7 @@ public final class PursuitMath {
 	 * @author Alex Bryan
 	 */
 	public static Pose2D waypointCalc (Pose2D obj, double look, Pose2D p1, Pose2D p2) {
+		// Ugly math, but it works
 		double t = pureQuadForm (
 					(p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y),
 					2 * ((p1.x - obj.x) * (p2.x - p1.x) + (p1.y - obj.y) * (p2.y - p1.y)),

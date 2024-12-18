@@ -31,6 +31,8 @@
 
 package Wheelie;
 
+import static Wheelie.PursuitMath.clamp;
+
 /**
  * A PID class for Wheelie.
  * Interestingly enough, it was originally written for the 2023-2024 season of FTC.
@@ -136,10 +138,7 @@ public class PID {
 
 		i += kI * currErr * (currTime - prevTime);
 
-		if (!(maxI == maxI)) {
-			i = (i > maxI) ? maxI : i;
-			i = (i < -maxI) ? -maxI : i;
-		}
+		i = clamp(i, -maxI, maxI);
 
 		double d = kD * (currErr - prevErr) / (currTime - prevTime);
 		
@@ -162,10 +161,7 @@ public class PID {
 
                 i += kI * ((currErr * System.nanoTime() / 1e9) - prevTime);
 
-                if (maxI == maxI) {
-                        i = (i > maxI) ? maxI : i;
-                        i = (i < -maxI) ? -maxI : i;
-                }
+				i = clamp (i, -maxI, maxI);
 
                 double d = kD * (currErr - prevErr) / ((System.nanoTime() / 1e9) - prevTime);
 

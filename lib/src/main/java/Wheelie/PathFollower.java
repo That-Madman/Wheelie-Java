@@ -1,6 +1,4 @@
-package Wheelie;
-
-/**
+/*
  * BSD 3-Clause License
  *
  * Copyright (c) 2024, Franklin Academy Robotics
@@ -28,44 +26,32 @@ package Wheelie;
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
+package Wheelie;
 
-
+/**
  * The Path Following algorithm that takes a list of points and lookahead to determine how
  * the robot should move towards its destination
  *
- * @author Kennedy Brundidge
+ * @author Kennedy Brundidge and Alex Bryan
  */
 public class PathFollower {
 	public Path path;
 	public Pose2D startPt;
 	public double look;
 
-	private int wayPoint = 0;
-	private double translationError = 5, headingError = Math.toRadians(10);
+	private int wayPoint;
+	private final double translationError;
+	private final double headingError;
 
 	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path
 	 * @param startPt The starting location of the robot
 	 * @param look The lookahead distance
 	 * @param path The Path object of the points the robot will follow
-	 *
-	 * @author Kennedy Brundidge
+	 * @param tError The maximum acceptable translation error
+	 * @param hError The maximum acceptable heading error
 	 */
-
-	public PathFollower (Pose2D startPt, double look, Path path) {
-		this.startPt = startPt;
-		this.look = look;
-		this.path = path;
-	}
-
-	/** The constructor for the path follower, with the starting Pose2D, lookahead distance, and path
-	 * @param startPt The starting location of the robot
-	 * @param look The lookahead distance
-	 * @param path The Path object of the points the robot will follow
-	 *
-	 * @author Kennedy Brundidge
-	 */
-
 	public PathFollower (Pose2D startPt, double look, Path path, double tError, double hError) {
 		this.startPt = startPt;
 		this.look = look;
@@ -78,13 +64,15 @@ public class PathFollower {
 	 * and lookahead distance (path will be initialized with no points)
 	 * @param startPt The starting location of the robot
 	 * @param look The lookahead distance
-	 *
-	 * @author Kennedy Brundidge
+	 * @param tError The maximum acceptable translation error
+	 * @param hError The maximum acceptable heading error
 	 */
-	public PathFollower (Pose2D startPt, double look) {
+	public PathFollower (Pose2D startPt, double look, double tError, double hError) {
 		this.startPt = startPt;
 		this.look = look;
 		path = new Path();
+		this.translationError = tError;
+		this.headingError = hError;
 	}
 
 
@@ -98,28 +86,33 @@ public class PathFollower {
 		//Checks that robot is not approaching the last point
 		if (path.pathLength() != wayPoint + 2) {
 			//Finds if the circle intersects with the next line/path
-			Pose2D next = PursuitMath.waypointCalc
-					(obj, look, path.getPt(wayPoint + 1), path.getPt(wayPoint + 2));
+			Pose2D next = PursuitMath.waypointCalc(
+					obj,
+					look,
+					path.getPt(wayPoint + 1),
+					path.getPt(wayPoint + 2)
+			);
+
 			//If circle intersects with next line then robot can start approaching the next point
-			if (!Double.isNaN(next.x)) {
+			if (next.x == next.x) {
 				wayPoint++;
 				return next;
 			}
 		}
 
 		//Finds a point for robot to approach
-		Pose2D target = PursuitMath.waypointCalc
-				(obj, look, path.getPt(wayPoint), path.getPt(wayPoint + 1));
+		Pose2D target = PursuitMath.waypointCalc (obj, look, path.getPt(wayPoint), path.getPt(wayPoint + 1));
 
-		//Moves straight to next point if PP math is returning NaN values (circle and line do not intersect)
-		if (Double.isNaN(target.x)) { //Magic the gathering
+		//Moves straight to next point if math returns NaN values (circle and line do not intersect)
+		if (target.x != target.x) {
 			target = path.getPt(wayPoint + 1);
 		}
 
 		//If robot is within its margin of error, move to next point
-		if(Math.abs(path.getPt(wayPoint+1).h-obj.h) <= headingError &&
-				Math.hypot(target.x-obj.x, target.y-obj.y) <= translationError)
-			wayPoint+=1;
+		if(Math.abs(path.getPt(wayPoint + 1).h - obj.h) <= headingError &&
+				Math.hypot(target.x - obj.x, target.y - obj.y) <= translationError) {
+			wayPoint += 1;
+		}
 
 		return target;
 	}
@@ -134,11 +127,11 @@ public class PathFollower {
 	}
 
 	public void augmentWaypoint(){
-		wayPoint++;
+		++wayPoint;
 	}
 
-	public boolean approachingLast(){
-		return getLastPoint().equals(path.getPt(wayPoint+1));
+	public boolean approachingLast() {
+		return getLastPoint().equals(path.getPt(wayPoint + 1));
 	}
 
 	/** Returns the last point of the path */

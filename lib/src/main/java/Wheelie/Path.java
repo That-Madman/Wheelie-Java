@@ -32,6 +32,7 @@
 package Wheelie;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A series of points on an x-y graph with headings, core to the Pure Pursuit algorithm.
@@ -40,35 +41,35 @@ import java.util.ArrayList;
  */
 public class Path {
 	/** The point at which the path starts. That is, the object's initial position. */
-	private Pose2D start;
+	public Pose2D start;
 
 	/** The points that form a rough image of the path */
-	private ArrayList<Pose2D> points = new ArrayList<Pose2D>();
+	private final ArrayList<Pose2D> points;
 
 	/** The constructor for the path that defaults to an empty path, starting at (0,0) headed at 0 degrees */
 	public Path () {
 		start = new Pose2D(0,0);
+		points = new ArrayList<>();
 	}
 
 	/** The constructor for the path, with the start position set */
 	public Path (Pose2D start) {
 		this.start = start;
-	}
+		points = new ArrayList<>();
+    }
 
 	/** The constructor for the path, with a path starting at (0,0) at heading 0 degrees and the following points set */
 	public Path (Pose2D[] pts) {
 		start = new Pose2D(0,0);
-		for (Pose2D point: pts) {
-			points.add(point);
-		}
+		points = new ArrayList<>();
+        points.addAll(Arrays.asList(pts));
 	}
 
 	/** The constructor for the path, with all points in the path set */
 	public Path (Pose2D start, Pose2D[] pts) {
 		this.start = start;
-		for (Pose2D point: pts) {
-			points.add(point);
-		}
+		points = new ArrayList<>();
+		points.addAll(Arrays.asList(pts));
 	}
 
 	/** Sets or changes the start position */
@@ -86,14 +87,14 @@ public class Path {
 		points.clear();
 	}
 
-	/** Returns the start position of the path */
-	public Pose2D getStart () {
-		return start;
-	}
-
-	/** Returns the Nth point on the path */
+	/** Returns the Nth point on the path, or an all NaN point */
 	public Pose2D getPt (int i) {
-		return points.get(i);
+		try {
+			return points.get(i);
+		} catch (IndexOutOfBoundsException ignored) {
+			// Avoid out of bounds errors and instead return Point of all NaNs.
+			return new Pose2D(Double.NaN, Double.NaN, Double.NaN);
+		}
 	}
 
 	/** Returns the number of waypoints in the path */

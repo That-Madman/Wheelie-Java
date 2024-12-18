@@ -43,7 +43,7 @@ public final class PursuitMath {
 	private PursuitMath () {}
 
 	/**
-	 * The quadratic formula, though it only returns the + form, because it is the closer one.
+	 * The quadratic formula, though it only returns the additive form, because it is the closer one.
 	 * @param a the a of the formula
 	 * @param b the b of the formula
 	 * @param c the c of the formula

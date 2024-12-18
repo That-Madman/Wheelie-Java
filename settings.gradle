@@ -1,7 +1,7 @@
 //Just builds the library. Nothing too fancy.
 
 plugins {
-	//Gradle threw a fit last time this was removed. I'm just going to keep it here for now.
+	//Gradle threw a hissy fit last time this was removed. I'm just going to keep it here for now.
 	id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
